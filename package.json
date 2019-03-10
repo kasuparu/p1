@@ -1,0 +1,9 @@
+{
+    "name": "p1",
+    "version": "0.0.1",
+    "description": "Days Without A Production Incident",
+    "dependencies": {
+        "express": "^4.16.4",
+        "socket.io": "^2.2.0"
+    }
+}
