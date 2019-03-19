@@ -5,32 +5,35 @@ const timestampFileService = require('./src/service/timestamp-file');
 
 const WEB_PORT = 3000;
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
     res.sendFile(__dirname + '/static/index.html');
 });
 
 timestampFileService.loadTimestamp((error) => {
-  console.log(error);
+    if (error) {
+        console.error('Error loading timestamp', error);
+    }
 });
 
-http.listen(WEB_PORT, function(){
-    console.log('listening on *: ' + WEB_PORT);
+http.listen(WEB_PORT, function () {
+    console.info('listening on *: ', WEB_PORT);
 
-    io.on('connection', function(socket){
-        console.log('a user connected');
+    io.on('connection', function (socket) {
+        console.debug('Client connected', socket.client.id);
         socket.emit('reset timestamp', timestampFileService.get());
 
-        socket.on('disconnect', function(){
-            console.log('user disconnected');
+        socket.on('disconnect', function () {
+            console.debug('Client disconnected', socket.client.id);
         });
 
-        socket.on('reset timestamp request', function(msg){
-
-            const now = + new Date();
-            console.log('reset timestamp: ' + now);
+        socket.on('reset timestamp request', function () {
+            const now = +new Date();
+            console.info('Reset timestamp: ', now, 'by', socket.client.id);
             io.emit('reset timestamp', now);
             timestampFileService.saveTimestamp(now, (error) => {
-              console.log(error);
+                if (error) {
+                    console.error('Error saving timestamp', error);
+                }
             });
         });
     });
