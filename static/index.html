@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Socket.IO chat</title>
+    <title>P1</title>
     <style>
         * {
             margin: 0;
@@ -10,51 +10,44 @@
         }
 
         body {
-            font: 13px Helvetica, Arial;
+            background: whitesmoke;
+            font: 36px Helvetica, Arial;
         }
 
         form {
-            background: #000;
+            background: black;
             padding: 3px;
             position: fixed;
             bottom: 0;
             width: 100%;
         }
 
-        form input {
-            border: 0;
-            padding: 10px;
-            width: 90%;
-            margin-right: .5%;
-        }
-
         form button {
-            width: 9%;
-            background: rgb(130, 224, 255);
+            background: red;
             border: none;
             padding: 10px;
         }
 
-        #messages {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
+        .centered {
+            text-align: center;
         }
 
-        #messages li {
-            padding: 5px 10px;
+        .padded-from-top {
+            padding-top: 100px;
         }
 
-        #messages li:nth-child(odd) {
-            background: #eee;
+        .number {
+            font: 144px Helvetica, Arial;
         }
     </style>
 </head>
 <body>
-<ul id="messages"></ul>
-<form action="">
-    <input id="m" autocomplete="off"/>
-    <button>Send</button>
+<div class="centered padded-from-top">
+    Days since production incident
+</div>
+<div class="number centered"><span id="number"></span></div>
+<form action="" class="centered">
+    <button>It's happening!</button>
 </form>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -64,7 +57,7 @@
         var currentTimestamp = undefined;
         var MS_PER_DAY = 1000 * 60 * 60 * 24;
         var SCREEN_UPDATE_INTERVAL_MS = 10000;
-        var interval;
+        var intervalId;
 
         var dayStart = function (timestamp) {
             return new Date(timestamp).setHours(0, 0, 0, 0);
@@ -74,21 +67,16 @@
             return Math.floor((dayStart(now) - dayStart(timestamp)) / MS_PER_DAY);
         };
 
-        var dayPlural = function (diffDays) {
-            return diffDays === 1 ? 'day' : 'days';
-        };
-
         var updateTimestamp = function () {
             var diffDays = getDateDifferenceInDays(+new Date(), currentTimestamp);
-            var text = diffDays + ' ' + dayPlural(diffDays) + ' since production incident';
-            $('#messages').append($('<li>').text(text));
+            $('#number').text(diffDays);
         };
 
         socket.on('reset timestamp', function (timestamp) {
             currentTimestamp = timestamp;
             updateTimestamp();
-            if (interval === undefined) {
-                interval = setInterval(updateTimestamp, SCREEN_UPDATE_INTERVAL_MS);
+            if (intervalId === undefined) {
+                intervalId = setInterval(updateTimestamp, SCREEN_UPDATE_INTERVAL_MS);
             }
         });
 
