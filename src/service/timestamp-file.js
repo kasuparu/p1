@@ -1,11 +1,13 @@
 const fs = require('fs');
-const FILENAME = 'timestamp';
+var os = require("os");
+const TIMESTAMP_FILENAME = 'timestamp';
+const HISTORY_FILENAME = 'history';
 const ENCODING = 'utf8';
 
 let timestamp;
 
 module.exports.loadTimestamp = (cb) => {
-    fs.readFile(FILENAME, ENCODING, (error, stringFromFile) => {
+    fs.readFile(TIMESTAMP_FILENAME, ENCODING, (error, stringFromFile) => {
         if (error) {
             return cb(error);
         }
@@ -23,8 +25,9 @@ module.exports.loadTimestamp = (cb) => {
 module.exports.get = () => timestamp;
 
 module.exports.saveTimestamp = (newTimestamp, cb) => {
-    timestamp = newTimestamp;
-    // TODO Deal with multiple saves at the same time
     // It's unsafe to call multiple writeFile
-    fs.writeFile(FILENAME, newTimestamp, cb);
+    // TODO Deal with multiple saves at the same time
+    fs.appendFile(HISTORY_FILENAME, timestamp + os.EOL, (_cb) => {});
+    timestamp = newTimestamp;
+    fs.writeFile(TIMESTAMP_FILENAME, newTimestamp, cb);
 };
