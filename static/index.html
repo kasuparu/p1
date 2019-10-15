@@ -1,96 +1,98 @@
 <!doctype html>
 <html>
 <head>
-    <title>P1</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <title>P1</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            background: whitesmoke;
-            font-family: Helvetica, Arial, sans-serif;
-        }
+    body {
+        background: whitesmoke;
+        font-family: Helvetica, Arial, sans-serif;
+    }
 
-        form {
-            background: black;
-            padding: 3px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+    form {
+        background: black;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
 
-        form button {
-            color: whitesmoke;
-            background: red;
-            border: none;
-            padding: 10px;
-        }
+    form button {
+        color: whitesmoke;
+        background: red;
+        border: none;
+        padding: 10px;
+    }
 
-        .text {
-            font-size: calc(6vw);
-        }
+    .text {
+        font-size: calc(6vw);
+    }
 
-        .centered {
-            text-align: center;
-        }
+    .centered {
+        text-align: center;
+    }
 
-        .padded-from-top {
-            padding-top: calc(4vw + 4vh + 2vmin);
-        }
+    .padded-from-top {
+        padding-top: calc(4vw + 4vh + 2vmin);
+    }
 
-        .number {
-            font-size: calc(60vh - 6vw);
-        }
-    </style>
+    .number {
+        font-size: calc(60vh - 6vw);
+    }
+  </style>
 </head>
 <body>
+<div style="align-content: center" id="missme"></div>
 <div class="centered padded-from-top text">
-    Days since production incident
+  Days since production incident
 </div>
 <div class="number centered"><span id="number"></span></div>
 <form action="" class="centered">
-    <button>It's happening!</button>
+  <button>It's happening!</button>
 </form>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
-    $(function () {
-        var socket = io();
-        var currentTimestamp = undefined;
-        var MS_PER_DAY = 1000 * 60 * 60 * 24;
-        var SCREEN_UPDATE_INTERVAL_MS = 10000;
-        var intervalId;
+  $(function () {
+    var socket = io();
+    var currentTimestamp = undefined;
+    var MS_PER_DAY = 1000 * 60 * 60 * 24;
+    var SCREEN_UPDATE_INTERVAL_MS = 10000;
+    var intervalId;
 
-        var dayStart = function (timestamp) {
-            return new Date(timestamp).setHours(0, 0, 0, 0);
-        };
+    var dayStart = function (timestamp) {
+      return new Date(timestamp).setHours(0, 0, 0, 0);
+    };
 
-        var getDateDifferenceInDays = function (now, timestamp) {
-            return Math.floor((dayStart(now) - dayStart(timestamp)) / MS_PER_DAY);
-        };
+    var getDateDifferenceInDays = function (now, timestamp) {
+      return Math.floor((dayStart(now) - dayStart(timestamp)) / MS_PER_DAY);
+    };
 
-        var updateTimestamp = function () {
-            var diffDays = getDateDifferenceInDays(+new Date(), currentTimestamp);
-            $('#number').text(diffDays);
-        };
+    var updateTimestamp = function () {
+      var diffDays = getDateDifferenceInDays(+new Date(), currentTimestamp);
+      $('#number').text(diffDays);
+    };
 
-        socket.on('reset timestamp', function (timestamp) {
-            currentTimestamp = timestamp;
-            updateTimestamp();
-            if (intervalId === undefined) {
-                intervalId = setInterval(updateTimestamp, SCREEN_UPDATE_INTERVAL_MS);
-            }
-        });
-
-        $('form').submit(function (e) {
-            e.preventDefault(); // prevents page reloading
-            socket.emit('reset timestamp request');
-            return false;
-        });
+    socket.on('reset timestamp', function (timestamp) {
+      currentTimestamp = timestamp;
+      updateTimestamp();
+      if (intervalId === undefined) {
+        intervalId = setInterval(updateTimestamp, SCREEN_UPDATE_INTERVAL_MS);
+      }
     });
+
+    $('form').submit(function (e) {
+      e.preventDefault(); // prevents page reloading
+      $('#missme').html('<img id="pic" style="display: block; margin-left: auto; margin-right: auto;" src=/missme alt="qw"/>');
+      socket.emit('reset timestamp request');
+      return false;
+    });
+  });
 </script>
 </body>
 </html>

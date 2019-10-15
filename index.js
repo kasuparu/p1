@@ -8,7 +8,9 @@ const WEB_PORT = 3000;
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/static/index.html');
 });
-
+app.get('/missme', function (req, res) {
+  res.sendfile(__dirname + '/static/missme-min.png');
+});
 timestampFileService.loadTimestamp((error) => {
     if (error) {
         console.error('Error loading timestamp', error);
