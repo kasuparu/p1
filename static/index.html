@@ -89,6 +89,9 @@
     $('form').submit(function (e) {
       e.preventDefault(); // prevents page reloading
       $('#missme').html('<img id="pic" style="display: block; margin-left: auto; margin-right: auto;" src=/missme alt="qw"/>');
+      setInterval(function () {
+        $('#missme').html('');
+      }, 10000);
       socket.emit('reset timestamp request');
       return false;
     });
