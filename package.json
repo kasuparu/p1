@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "Days Without A Production Incident",
   "dependencies": {
-    "express": "^4.21.0",
+    "express": "^4.21.1",
     "mocha": "^10.2.0",
-    "socket.io": "^2.5.0"
+    "socket.io": "^4.8.0"
   }
 }
