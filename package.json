@@ -4,7 +4,7 @@
   "description": "Days Without A Production Incident",
   "dependencies": {
     "express": "^4.21.2",
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "socket.io": "^4.8.0"
   }
 }
